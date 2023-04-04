@@ -1,6 +1,6 @@
 const express = require("express");
 
-const {getAllBooks,getSingleBookbyID} = require("../controllers/book-controller");
+const {getAllBooks,getSingleBookbyID,getIssuedBooks} = require("../controllers/book-controller");
 const { route } = require("./user");
 
 const router = express.Router();
@@ -27,6 +27,14 @@ router.get("/",getAllBooks);
 
 router.get("/:id",getSingleBookbyID);
 
+/**
+ * Route: /books/issued
+ * Method: GET
+ * Description: Get all issued books
+ * Access: Public
+ * Parameters: None
+ */
 
+router.get("/issued/allbooks",getIssuedBooks);
 
 module.exports = router;
