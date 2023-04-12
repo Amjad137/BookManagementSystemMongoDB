@@ -50,7 +50,7 @@ exports.getSingleBookbyID = async (req,res) => {
 };
 
 exports.getIssuedBooks = async (req,res) => {
-    const userWithIssdBook = await userModel.find({
+    const userWithIssdBook = await UserModel.find({
         issuedBook: {$exists: true},                
     })
     .populate("issuedBook");
