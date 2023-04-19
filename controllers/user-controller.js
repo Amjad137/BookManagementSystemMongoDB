@@ -54,7 +54,7 @@ exports.createNewUser = async (req,res) => {
                 .status(404)
                 .json({
                     success: false,
-                    message: "No Data to Create a New Book",
+                    message: "No Data to Create a New User",
                 });
     }
 
@@ -70,7 +70,7 @@ exports.createNewUser = async (req,res) => {
             .status(200)
             .json({
                 success: true,
-                message: "Bood Added",
+                message: "User Added",
                 data: newUserData,
             });
 
@@ -125,4 +125,69 @@ exports.deleteUserByID = async (req,res) => {
                 message: "User Deleted",
                 data: dataAfterDeletion,
             });
+};
+
+exports.getSubscriptionDetaisByID = async (req,res) => {
+    const {id} = req.params;
+
+    const fUser = await UserModel.findById({_id:id});
+
+    if (!fUser) {
+        return res
+                .status(404)
+                .json({
+                    success:false,
+                    message: "No User Found"
+                });
+    }
+
+    const getDateInDays = (data= "") => {
+        let date;
+        if (data === ""){
+            date = new Date();
+        } else {
+            date = new Date(data);
+        }
+        let days = Math.floor(date /(1000*24*60*60));
+        return days;
+    };
+
+    const subscriptionType = (date) => {
+        if (fUser.subscriptionType === "Basic"){
+            date = date + 90 ;
+        }else if(fUser.subscriptionType === "Standard"){
+            date = date + 180;
+        }else if(fUser.subscriptionType === "Premium"){
+            date = date + 365;
+        }
+        return date;
+    };
+
+    let returnDate = getDateInDays(fUser.returnDate);
+    let currentDate = getDateInDays();
+    let subscriptionDate = getDateInDays(fUser.subscriptionDate);
+    let subscriptionExpiration = subscriptionType(subscriptionDate);
+
+    const data = {
+        ...fUser,
+        isSubscriptionExpired : subscriptionExpiration < currentDate,
+
+        daysLeftForExpiration: subscriptionExpiration <= currentDate
+        ? 0
+        :subscriptionExpiration - currentDate,
+
+        fine: returnDate < currentDate
+        ? subscriptionExpiration <= currentDate
+            ? 100
+            :50
+        :0,
+    };
+    return res
+            .status(200)
+            .json({
+                success: true,
+                message: "Subscription Details Fetched",
+                data: data,
+            });
+
 };

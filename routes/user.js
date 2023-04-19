@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const {getAllUsers,getUserByID, createNewUser, updateUserByID, deleteUserByID}= require("../controllers/user-controller");
+const {getAllUsers,getUserByID, createNewUser, updateUserByID, deleteUserByID,getSubscriptionDetaisByID}= require("../controllers/user-controller");
 
 /**
  * Route: /users
@@ -54,5 +54,13 @@ router.put("/:id", updateUserByID);
 
 router.delete("/:id", deleteUserByID);
 
+/**
+ * Route: /users
+ * Method: GET
+ * Description: Get Subscription Details by ID
+ * Access: Public
+ * Parameters: ID
+ */
+router.get("/subscription/:id", getSubscriptionDetaisByID);
 
 module.exports = router;
